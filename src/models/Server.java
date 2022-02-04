@@ -29,31 +29,47 @@ public class Server {
 	private DataOutputStream salida;
 	private DataInputStream entrada;
 	private String mensajeRecibido;
+	
+	private String[] datos;
     
 	/*
 	 * Main method
 	 */
 	public static void main(String[] args) {
 		Server server = new Server();
-		//server.start();
+		server.start();
 		
 		//server.dataBaseConexion();
-		server.registrarse();
+		//server.registrarse();
 	}
 	
-	private void start() {
+	private  void start() {
 		try {
 			InetAddress ip = InetAddress.getByName(LOCALHOST);		
 			
 			this.server = new ServerSocket(this.PORT, this.BACKLOG, ip);
+			
 			System.out.println("Servidor iniciado...");
 			Thread.sleep(1000);
 			System.out.println("Escuchando...");
 			while (true) {
 				if (clientes.size() != BACKLOG) {
+					System.out.println("Succed0");
 					this.cliente = this.server.accept();
 					this.clientes.add(new Socket(this.cliente.getInetAddress(),this.cliente.getLocalPort()));
-					System.out.println(this.clientes.get(0));
+					System.out.println("Succed1");
+					entrada = new DataInputStream(cliente.getInputStream());
+		            salida = new DataOutputStream(cliente.getOutputStream());
+		            System.out.println("Succed2");
+					mensajeRecibido = entrada.readUTF();
+					this.datos = mensajeRecibido.split(",");
+					System.out.println("Succed3");
+					String resul = this.procesar();
+					salida.writeUTF(resul);
+					//this.clientes.removeIf(client -> client.getInetAddress().equals(this.cliente.getInetAddress()));
+					this.cliente.close();
+					this.server.close();
+					System.out.println("Succed4");
 				}
 				else {
 					System.out.println("El servidor no acepta mas clientes");
@@ -62,43 +78,46 @@ public class Server {
 				
 		} 
 		catch (NumberFormatException e) {
+			System.out.println("not Succed 0");
 			e.printStackTrace();
 		} 
 		catch (UnknownHostException e) {
+			System.out.println("not Succed 1");
 			e.printStackTrace();
 		} 
 		catch (IOException e) {
+			System.out.println("not Succed 2");
 			e.printStackTrace();
 		} 
 		catch (InterruptedException e) {
+			System.out.println("not Succed 3");
 			e.printStackTrace();
 		}
 	}
-	
-	private void dataBaseConexion() {
-		try {
-			Connection c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", "root", "root106");
-			Statement s = c.createStatement();
-			//ResultSet rs = s.executeQuery("SELECT User_ID, User_Name, User_Password, User_Email FROM userslog");
-			
-			System.out.println("Succed");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	private String procesar() {
+		String resul;
+		switch (datos[0]) {
+			case "PAX50":
+				resul = this.registrarse();
+				break;
+			default:
+				resul = null;
+			}
+		return resul;
 	}
 	
-	private void registrarse() {
+	private String registrarse() {
 		Connection c = null;
+		String resul = "";
 		try {
 			c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", "root", "root106");
 			CallableStatement cst = c.prepareCall("{call RegisterUser (?,?,?,?)}");
-			cst.setString(1, "root");
-			cst.setString(2, "root106");
-			cst.setString(3, "root@chat4all.com");
+			cst.setString(1, datos[1]);
+			cst.setString(2, datos[2]);
+			cst.setString(3, datos[3]);
 		    cst.registerOutParameter(4, java.sql.Types.VARCHAR);
 			cst.execute();
-			String resul = cst.getString(4);
+			resul = cst.getString(4);
 			System.out.println(resul);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -110,7 +129,9 @@ public class Server {
 	            } catch (SQLException ex) {
 	                System.out.println("Error: " + ex.getMessage());
 	            }
+			
 		}
+		 return resul;
 	}
 	
 	
