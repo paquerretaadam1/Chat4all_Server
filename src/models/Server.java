@@ -111,7 +111,7 @@ public class Server {
 		Connection c = null;
 		String resul = "";
 		try {
-			c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", "root", "root106");
+			c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/chat4all", "root", "root");
 			CallableStatement cst = c.prepareCall("{call RegisterUser (?,?,?,?)}");
 			cst.setString(1, datos[1]);
 			cst.setString(2, datos[2]);
