@@ -56,20 +56,21 @@ public class Server {
 				if (clientes.size() != BACKLOG) {
 					System.out.println("Succed0");
 					this.cliente = this.server.accept();
+					
 					this.clientes.add(new Socket(this.cliente.getInetAddress(),this.cliente.getLocalPort()));
 					System.out.println("Succed1");
 					entrada = new DataInputStream(cliente.getInputStream());
-		            salida = new DataOutputStream(cliente.getOutputStream());
-		            System.out.println("Succed2");
+					salida = new DataOutputStream(cliente.getOutputStream());
+					System.out.println("Succed2");
 					mensajeRecibido = entrada.readUTF();
 					this.datos = mensajeRecibido.split(",");
 					System.out.println("Succed3");
 					String resul = this.procesar();
 					salida.writeUTF(resul);
 					//this.clientes.removeIf(client -> client.getInetAddress().equals(this.cliente.getInetAddress()));
-					this.cliente.close();
-					this.server.close();
+						
 					System.out.println("Succed4");
+					
 				}
 				else {
 					System.out.println("El servidor no acepta mas clientes");
