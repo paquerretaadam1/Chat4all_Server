@@ -40,11 +40,11 @@ public class ClientSocket extends Thread{
 		dos.writeUTF(message);
 	}
  
-	public String register() {
+	public String register(Message m) {
 		Connection c = null;
 		String resul = "";
 		try {
-			c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/chat4all", "root", "root");
+			c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", "root", "root106");
 			CallableStatement cst = c.prepareCall("{call RegisterUser (?,?,?,?)}");
 			cst.setString(1, datos[1]);
 			cst.setString(2, datos[2]);
@@ -67,28 +67,30 @@ public class ClientSocket extends Thread{
 		}
 		 return resul;
 	}
-	public String login() {
+	public String login(Message m) {
+		return "";
+	}
+	private String procesar(Message m) {
+		
 		return "";
 	}
 	@Override
 	public void run() {
 		boolean start = false;
-		try {
-			while(!start) {
-				String datos = dis.readUTF();
-				this.datos = datos.split(",");
-				String resul = "";
-				if(this.datos[0].equals("PAX50")) {
-					resul = register();
-				}
-				else {
-					resul = login();
-				}
-				dos.writeUTF(resul);
-			}
-			
+		try {					
 			while (true) {
-				server.sendToAll(dis.readUTF());
+				String entrada = dis.readUTF();
+				Message m = Message.getInstance(entrada);
+				switch(procesar(m)) {
+				case Message.LOGIN:
+					dos.writeUTF(login(m));					
+					break;
+				case Message.SINGIN:
+					dos.writeUTF(register(m));
+					break;
+				default:
+					server.sendToAll(entrada);
+				}				
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -20,7 +20,7 @@ public class ServerPrueba implements Runnable {
 	private static int clientId = 1;
  
 	public static void main(String[] args) throws Exception {
-		new Server();
+		new ServerPrueba();
 	}
  
 	public ServerPrueba() throws IOException {
