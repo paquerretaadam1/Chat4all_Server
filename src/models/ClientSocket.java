@@ -48,6 +48,7 @@ public class ClientSocket extends Thread{
  
 	public void sendMsg(String message) throws IOException {
 		dos.writeUTF(message);
+		System.out.println(message);
 	}
  
 	public String register() {
@@ -109,10 +110,12 @@ public class ClientSocket extends Thread{
 		try {					
 			while (true) {
 				String entrada = dis.readUTF();
+				System.out.println("recibido");
 				datos = entrada.split(",");				
 				switch(datos[0]) {
 				case "PAX51":
-					dos.writeUTF(login());					
+					dos.writeUTF(login());
+					System.out.println("enviado");
 					break;
 				case "PAX50":
 					dos.writeUTF(register());
@@ -120,7 +123,9 @@ public class ClientSocket extends Thread{
 				default:
 					server.sendToAll(entrada);
 					break;
-				}				
+					
+				}
+				
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
