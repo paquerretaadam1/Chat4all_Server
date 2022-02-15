@@ -42,6 +42,11 @@ public class ServerPrueba implements Runnable {
 			}			
 		}
 	}
+	public void showClients() {
+		for (ClientSocket client : clients) {
+			System.out.println(client.getPort());
+		}
+	}
 	@Override
 	public void run() {
 		try {
@@ -56,7 +61,6 @@ public class ServerPrueba implements Runnable {
 				clients.add(clientSocket);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

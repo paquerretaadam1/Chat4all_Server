@@ -3,17 +3,13 @@ package models;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.Socket;
 
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Base64;
 
 public class ClientSocket extends Thread{
@@ -52,14 +48,14 @@ public class ClientSocket extends Thread{
  
 	public void sendMsg(String message) throws IOException {
 		dos.writeUTF(message);
-		System.out.println(message);
+		System.out.println(this.getPort());
 	}
  
 	public String register() {
 		Connection c = null;
 		String resul = "";
 		try {
-			c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", user, pwd);
+			c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/chat4all", user, user);
 			CallableStatement cst = c.prepareCall("{call RegisterUser (?,?,?,?)}");
 			cst.setString(1, datos[1]);
 			cst.setString(2, datos[2]);
@@ -67,9 +63,7 @@ public class ClientSocket extends Thread{
 		    cst.registerOutParameter(4, java.sql.Types.VARCHAR);
 			cst.execute();
 			resul = cst.getString(4);
-			System.out.println(resul);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		finally {
@@ -86,16 +80,14 @@ public class ClientSocket extends Thread{
 		Connection c = null;
 		String resul = "";
 		try {
-			c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", "root", "root106");
+			c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/chat4all", user, user);
 			CallableStatement cst = c.prepareCall("{call LoginUser (?,?,?)}");
 			cst.setString(1, datos[1]);
 			cst.setString(2, datos[2]);			
 		    cst.registerOutParameter(3, java.sql.Types.VARCHAR);
 			cst.execute();
 			resul = cst.getString(3);
-			System.out.println(resul);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		finally {
@@ -122,12 +114,12 @@ public class ClientSocket extends Thread{
 				datos = entrada.split(",");				
 				switch(datos[0]) {
 				case "PAX51":
-					String a = login();
-					System.out.println(a);
-					server.manageLogin(a, this.getPort() + 1);					
+					String msg1 = login();
+					server.manageLogin(msg1, this.getPort() + 1);					
 					break;
 				case "PAX50":
-					dos.writeUTF(register());
+					String msg2 = register();
+					server.manageLogin(msg2, this.getPort() + 1);					
 					break;
 				default:
 					server.sendToAll(entrada);
