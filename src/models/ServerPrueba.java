@@ -35,7 +35,13 @@ public class ServerPrueba implements Runnable {
 			client.sendMsg(message);
 		}
 	}
- 
+	public void manageLogin(String message, int port) throws IOException {
+		for (ClientSocket client : clients) {
+			if (client.getPort() == port) {
+				client.loginRegister(message);
+			}			
+		}
+	}
 	@Override
 	public void run() {
 		try {

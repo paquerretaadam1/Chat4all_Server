@@ -3,6 +3,7 @@ package models;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import java.net.UnknownHostException;
@@ -39,7 +40,10 @@ public class ClientSocket extends Thread{
 		this.user = new String(UserNameEnc, StandardCharsets.UTF_8);
 		this.pwd = new String(PassEnc, StandardCharsets.UTF_8);
 	}
- 
+	
+	public int getPort() {
+		return this.clientSocket.getPort();
+	}
 	public void close() throws IOException {
 		dis.close();
 		dos.close();
@@ -105,6 +109,10 @@ public class ClientSocket extends Thread{
 		 return resul;
 	}
 	
+	public void loginRegister(String message) throws IOException {
+		dos.writeUTF(message);
+	}
+	
 	@Override
 	public void run() {
 		try {					
@@ -114,8 +122,9 @@ public class ClientSocket extends Thread{
 				datos = entrada.split(",");				
 				switch(datos[0]) {
 				case "PAX51":
-					dos.writeUTF(login());
-					System.out.println("enviado");
+					String a = login();
+					System.out.println(a);
+					server.manageLogin(a, this.getPort() + 1);					
 					break;
 				case "PAX50":
 					dos.writeUTF(register());
