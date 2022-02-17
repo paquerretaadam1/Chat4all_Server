@@ -17,7 +17,6 @@ public class ClientSocket extends Thread{
 	private DataOutputStream dos;
 	private Socket clientSocket;
 	private ServerPrueba server;
-	private int clientId;
 	private String[] datos;
 	
 	private String user;
@@ -26,11 +25,10 @@ public class ClientSocket extends Thread{
 	private final byte[] UserNameEnc = Base64.getDecoder().decode("cm9vdA==");
 	private final byte[] PassEnc = Base64.getDecoder().decode("cm9vdDEwNg==");
  
-	public ClientSocket(Socket clientSocket, ServerPrueba server, int clientId) throws Exception {
+	public ClientSocket(Socket clientSocket, ServerPrueba server) throws Exception {
 		super();
 		this.clientSocket = clientSocket;
 		this.server = server;
-		this.clientId = clientId;
 		this.dis = new DataInputStream(clientSocket.getInputStream());
 		this.dos = new DataOutputStream(clientSocket.getOutputStream());
 		this.user = new String(UserNameEnc, StandardCharsets.UTF_8);
@@ -48,14 +46,14 @@ public class ClientSocket extends Thread{
  
 	public void sendMsg(String message) throws IOException {
 		dos.writeUTF(message);
-		System.out.println(this.getPort());
+		System.out.println(clientSocket.getInetAddress());
 	}
  
 	public String register() {
 		Connection c = null;
 		String resul = "";
 		try {
-			c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/chat4all", user, user);
+			c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", user, pwd);
 			CallableStatement cst = c.prepareCall("{call RegisterUser (?,?,?,?)}");
 			cst.setString(1, datos[1]);
 			cst.setString(2, datos[2]);
@@ -80,7 +78,7 @@ public class ClientSocket extends Thread{
 		Connection c = null;
 		String resul = "";
 		try {
-			c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/chat4all", user, user);
+			c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", user, pwd);
 			CallableStatement cst = c.prepareCall("{call LoginUser (?,?,?)}");
 			cst.setString(1, datos[1]);
 			cst.setString(2, datos[2]);			
@@ -110,17 +108,19 @@ public class ClientSocket extends Thread{
 		try {					
 			while (true) {
 				String entrada = dis.readUTF();
-				System.out.println("recibido");
 				datos = entrada.split(",");				
 				switch(datos[0]) {
 				case "PAX51":
 					String msg1 = login();
-					server.manageLogin(msg1, this.getPort() + 1);					
+					server.manageLogin(msg1, this.getPort());
 					break;
 				case "PAX50":
 					String msg2 = register();
-					server.manageLogin(msg2, this.getPort() + 1);					
+					server.manageLogin(msg2, this.getPort());					
 					break;
+				/*case "PAX99":
+					this.close();
+					break;*/
 				default:
 					server.sendToAll(entrada);
 					break;

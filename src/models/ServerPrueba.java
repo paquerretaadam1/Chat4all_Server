@@ -1,9 +1,7 @@
 package models;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -17,7 +15,6 @@ public class ServerPrueba implements Runnable {
 	private int port = 2022;
 	private List<ClientSocket> clients;
 	private ServerSocket server;
-	private static int clientId = 1;
  
 	public static void main(String[] args) throws Exception {
 		new ServerPrueba();
@@ -54,8 +51,7 @@ public class ServerPrueba implements Runnable {
 				 // Espera a que el cliente se conecte
 				Socket client = server.accept();
 				 // Inicializa y ejecuta el cliente conectado
-				ClientSocket clientSocket = new ClientSocket(client, this, clientId);
-				clientId++;
+				ClientSocket clientSocket = new ClientSocket(client, this);
 				clientSocket.start();
 				 // Agregar a la lista de conexiones del cliente
 				clients.add(clientSocket);
