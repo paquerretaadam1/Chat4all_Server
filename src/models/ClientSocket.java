@@ -18,6 +18,7 @@ public class ClientSocket extends Thread{
 	private Socket clientSocket;
 	private ServerPrueba server;
 	private String[] datos;
+	private final String SEPARADOR = ",&.";
 	
 	private String user;
 	private String pwd; 
@@ -48,7 +49,8 @@ public class ClientSocket extends Thread{
 		dos.writeUTF(message);
 		System.out.println(clientSocket.getInetAddress());
 	}
- 
+	
+	
 	public String register() {
 		Connection c = null;
 		String resul = "";
@@ -106,9 +108,9 @@ public class ClientSocket extends Thread{
 	@Override
 	public void run() {
 		try {					
-			while (true) {
+			while (dis != null) {
 				String entrada = dis.readUTF();
-				datos = entrada.split(",");				
+				datos = entrada.split(SEPARADOR);				
 				switch(datos[0]) {
 				case "PAX51":
 					String msg1 = login();
@@ -118,9 +120,9 @@ public class ClientSocket extends Thread{
 					String msg2 = register();
 					server.manageLogin(msg2, this.getPort());					
 					break;
-				/*case "PAX99":
-					this.close();
-					break;*/
+				case "PAX99":
+					close();
+					break;
 				default:
 					server.sendToAll(entrada);
 					break;

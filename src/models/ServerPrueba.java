@@ -7,6 +7,7 @@ import java.net.Socket;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 
 
@@ -15,7 +16,7 @@ public class ServerPrueba implements Runnable {
 	private int port = 2022;
 	private List<ClientSocket> clients;
 	private ServerSocket server;
- 
+	private TreeMap<String, String> usersConectados;
 	public static void main(String[] args) throws Exception {
 		new ServerPrueba();
 	}
@@ -44,6 +45,17 @@ public class ServerPrueba implements Runnable {
 			System.out.println(client.getPort());
 		}
 	}
+	
+	public void añadirUser(String user, String apodo) {
+		if (!estaDentro(user)){
+			
+		}
+	}
+	
+	public boolean estaDentro(String user) {		
+		return usersConectados.containsKey(user);
+	}
+	
 	@Override
 	public void run() {
 		try {
