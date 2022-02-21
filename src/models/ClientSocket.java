@@ -55,7 +55,7 @@ public class ClientSocket extends Thread{
 		Connection c = null;
 		String resul = "";
 		try {
-			c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", user, pwd);
+			c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/chat4all", user, user);
 			CallableStatement cst = c.prepareCall("{call RegisterUser (?,?,?,?)}");
 			cst.setString(1, datos[1]);
 			cst.setString(2, datos[2]);
@@ -80,7 +80,7 @@ public class ClientSocket extends Thread{
 		Connection c = null;
 		String resul = "";
 		try {
-			c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", user, pwd);
+			c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/chat4all", user, user);
 			CallableStatement cst = c.prepareCall("{call LoginUser (?,?,?)}");
 			cst.setString(1, datos[1]);
 			cst.setString(2, datos[2]);			
@@ -120,8 +120,15 @@ public class ClientSocket extends Thread{
 					String msg2 = register();
 					server.manageLogin(msg2, this.getPort());					
 					break;
+				case "PAX53":
+					
+					break;
+				case "PAX98":
+					server.justTalk(this);
+					break;
 				case "PAX99":
 					close();
+					dis = null;
 					break;
 				default:
 					server.sendToAll(entrada);
@@ -131,8 +138,7 @@ public class ClientSocket extends Thread{
 				
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Conexion terminada");
 		}
 	}
 
