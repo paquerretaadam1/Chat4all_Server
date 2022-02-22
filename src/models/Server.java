@@ -61,6 +61,14 @@ public class Server implements Runnable {
 		return usersConectados.containsKey(user);
 	}
 	
+	/**
+	 * Controls which connections are to receive messages
+	 * @param cs the socket that won't receive messages
+	 */
+	public void justTalk(ClientSocket cs) {
+		clients.remove(cs);
+	}
+	
 	@Override
 	public void run() {
 		try {
