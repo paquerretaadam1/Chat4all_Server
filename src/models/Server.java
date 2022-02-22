@@ -9,50 +9,55 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-
-
-public class ServerPrueba implements Runnable {
+/**
+ * Project Name: Chat4All
+ * Description: The Server Of A Simple Shared Chat
+ * 				It works with:
+ * 					- MySQL
+ * 					- Apache2
+ * @author Xabier Ruiz, Ander Gaona, Pedro Aquerreta (PAX)
+ */
+public class Server implements Runnable {
  
 	private int port = 2022;
 	private List<ClientSocket> clients;
 	private ServerSocket server;
 	private TreeMap<String, String> usersConectados;
+	
 	public static void main(String[] args) throws Exception {
-		new ServerPrueba();
+		new Server();
 	}
  
-	public ServerPrueba() throws IOException {
-		server = new ServerSocket (port); // Un puerto de 1024-65535
+	public Server() throws IOException {
+		server = new ServerSocket (port); // A port between 1024-65535
 		clients = new ArrayList<ClientSocket>();
 		new Thread(this).start();
 		System.out.println("server starting");
 	}
  
+	/**
+	 * Call the method that send messages for every client in the list
+	 */
 	public void sendToAll(String message) throws IOException {
 		for (ClientSocket client : clients) {
 			client.sendMsg(message);
 		}
 	}
-	public void manageLogin(String message, int port) throws IOException {
-		for (ClientSocket client : clients) {
-			if (client.getPort() == port) {
-				client.loginRegister(message);
-			}			
-		}
-	}
-	public void showClients() {
-		for (ClientSocket client : clients) {
-			System.out.println(client.getPort());
-		}
-	}
 	
-	public void añadirUser(String user, String apodo) {
-		if (!estaDentro(user)){
+	/**
+	 * TODO
+	 * Adds Users that are online
+	 */
+	public void addUser(String user, String apodo) {
+		if (!isIn(user)){
 			
 		}
 	}
 	
-	public boolean estaDentro(String user) {		
+	/**
+	 * @return if the user is online or not
+	 */
+	public boolean isIn(String user) {		
 		return usersConectados.containsKey(user);
 	}
 	
