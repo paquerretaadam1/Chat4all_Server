@@ -82,7 +82,7 @@ public class ClientSocket extends Thread{
 		Connection c = null;
 		String resul = "";
 		try {
-			c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/chat4all", user, user);
+			c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", user, pwd);
 			CallableStatement cst = c.prepareCall("{call RegisterUser (?,?,?,?)}");
 			cst.setString(1, datos[1]);
 			cst.setString(2, datos[2]);
@@ -112,7 +112,7 @@ public class ClientSocket extends Thread{
 		Connection c = null;
 		String resul = "";
 		try {
-			c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/chat4all", user, user);
+			c = DriverManager.getConnection("jdbc:mysql://172.20.6.106:3306/chat4all", user, pwd);
 			CallableStatement cst = c.prepareCall("{call LoginUser (?,?,?)}");
 			cst.setString(1, datos[1]);
 			cst.setString(2, datos[2]);			
